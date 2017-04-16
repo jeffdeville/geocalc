@@ -169,6 +169,27 @@ defmodule Geocalc do
   end
 
   @doc """
+  Determines whether a point exists within a bounding box or not. Note that I've only
+  worked on this in the northern hemisphere. In the southern hemisphere where longitudes
+  are reversed, I don't think this will work
+
+  ## Example
+      iex> berlin = [52.5075419, 13.4251364]
+      iex> bounding_box = [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
+      iex> Geocalc.in_bounding_box?(berlin, bounding_box)
+      true
+
+      iex> london = [51.5286416, -0.1015987]
+      iex> bounding_box = [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
+      iex> Geocalc.in_bounding_box?(london, bounding_box)
+      false
+  """
+  @spec in_bounding_box?(Point.t, list(Point.t)) :: boolean
+  def in_bounding_box?(point, bounding_box) do
+    GenServer.call(Calculator, {:in_bounding_box?, point, bounding_box})
+  end
+
+  @doc """
   Converts radians to degrees.
   Return degrees.
 

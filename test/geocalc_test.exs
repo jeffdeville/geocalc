@@ -102,4 +102,13 @@ defmodule GeocalcTest do
     radius = 10_000
     assert Geocalc.bounding_box(point, radius) == [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
   end
+
+  test "returns true if a point exists w/in a bounding box" do
+    point = [52.5075419, 13.4251364]
+    bounding_box = [[52.417520954378574, 13.277235453275123], [52.59756284562143, 13.573037346724874]]
+    assert Geocalc.in_bounding_box?(point, bounding_box)
+
+    milan = {45.4628328, 9.1076929}
+    refute Geocalc.in_bounding_box?(milan, bounding_box)
+  end
 end

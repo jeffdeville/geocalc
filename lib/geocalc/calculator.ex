@@ -41,6 +41,10 @@ defmodule Geocalc.Calculator do
     {:reply, bounding_box(point, radius_in_m), state}
   end
 
+  def handle_call({:in_bounding_box?, point, bounding_box}, _from, state) do
+    {:reply, in_bounding_box?(point, bounding_box), state}
+  end
+
   @earth_radius 6_371_000
   @pi :math.pi
   @intersection_not_found "No intersection point found"
@@ -200,5 +204,13 @@ defmodule Geocalc.Calculator do
     ad = @wgsa * :math.cos(lat)
     bd = @wgsb * :math.sin(lat)
     :math.sqrt( (an*an + bn*bn)/(ad*ad + bd*bd) )
+  end
+
+  def in_bounding_box?(point, [bottom_left, top_right]) do
+    is_lon_in_range = case Point.longitude(top_right) < Point.longitude(bottom_left) do
+      true -> Point.longitude(point) >= Point.longitude(bottom_left) || Point.longitude(point) <= Point.longitude(top_right)
+      false -> Point.longitude(point) >= Point.longitude(bottom_left) && Point.longitude(point) <= Point.longitude(top_right)
+    end
+    is_lon_in_range && Point.latitude(point) >= Point.latitude(bottom_left) && Point.latitude(point) <= Point.latitude(top_right)
   end
 end
